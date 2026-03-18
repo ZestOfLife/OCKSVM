@@ -24,9 +24,13 @@ class OCKSVM(ClassifierMixin, BaseEstimator):
     def __sklearn_tags__(self):
         try:
             from sklearn.utils._estimator_tags import ClassifierTags
-            tags = ClassifierTags()
-            tags.target_tags.multiclass = True
-            return tags
+            return ClassifierTags(
+                multiclass=True,
+                requires_y=True,
+                non_deterministic=False,
+                no_validation=False,
+                poor_score=False
+            )
         except (ImportError, ModuleNotFoundError):
             # Fall back to _get_tags() if older version
             return super().__sklearn_tags__() if hasattr(super(), "__sklearn_tags__") else None
