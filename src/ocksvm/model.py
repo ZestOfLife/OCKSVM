@@ -5,9 +5,10 @@ from sklearn.svm import OneClassSVM, SVC
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 
 class OCKSVM(ClassifierMixin, BaseEstimator):
-    def __init__(self, n_clusters=5, oc_nu=0.1, svc_kernel='rbf', random_state=None):
+    def __init__(self, n_clusters=5, oc_nu=0.1, gamma='scale', svc_kernel='rbf', random_state=None):
         self.n_clusters = n_clusters
         self.oc_nu = oc_nu
+        self.gamma = gamma
         self.svc_kernel = svc_kernel
         self.random_state = random_state
     
@@ -66,12 +67,12 @@ class OCKSVM(ClassifierMixin, BaseEstimator):
                 
                 # Check if reduced X,y has multiple classes
                 if len(np.unique(y_reduced)) > 1:
-                    clf = SVC(kernel=self.svc_kernel, random_state=self.random_state)
+                    clf = SVC(kernel=self.svc_kernel, gamma=self.gamma, random_state=self.random_state)
                     clf.fit(X_reduced, y_reduced)
                     self.models_.append(clf)
                 else:
                     # If reduced X,y has only one class, use non reduced X,y
-                    clf = SVC(kernel=self.svc_kernel, random_state=self.random_state)
+                    clf = SVC(kernel=self.svc_kernel, gamma=self.gamma, random_state=self.random_state)
                     clf.fit(X_c, y_c)
                     self.models_.append(clf)
             else:
